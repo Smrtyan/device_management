@@ -20,5 +20,7 @@ yarn build
 yarn lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### some frameworks' link
+
+[vue-grid-layout](https://jbaysolutions.github.io/vue-grid-layout/guide/#npm)
+

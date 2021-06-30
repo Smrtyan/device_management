@@ -3,20 +3,19 @@
     <form class="login" @submit.prevent="login">
       <h1>Sign in</h1>
       <div class="row mb-2 ">
-<!--        <label for="username">User name</label>-->
         <div class="col">
+          <div class="error" v-if="!$v.username.required">Name is required</div>
+          <div class="error" v-if="!$v.username.minLength">Name must have at least {{$v.username.$params.minLength.min}} letters.</div>
           <b-input required v-model="username" id="username" type="text" placeholder="Username"/>
         </div>
       </div>
       <div class="row mb-2">
-<!--        <label>Password</label>-->
         <div class="col">
+          <div class="error" v-if="!$v.password.required">Password is required</div>
+          <div class="error" v-if="!$v.password.minLength">Password must have at least {{$v.password.$params.minLength.min}} letters.</div>
           <b-input required v-model="password" type="password" placeholder="Password"/>
         </div>
       </div>
-
-
-
       <hr/>
       <b-link class="me-2" href="/signup">Sign up</b-link>
 
@@ -26,7 +25,7 @@
 </template>
 
 <script>
-import {getDevicesFromGroup} from '@/api/device'
+import { required, minLength} from 'vuelidate/lib/validators'
 export default {
   name: "SignIn",
   data(){
@@ -37,21 +36,26 @@ export default {
   },
   methods:{
     login: function () {
-      const { username, password } = this
-      this.$store.dispatch('auth/AUTH_REQUEST', { username, password }).then((r) => {
-        if(r.data.code ==200){
-          // this.$router.push('/')
-          getDevicesFromGroup({
-            pageSize:6,
-            index:1
-          }).then(e=>{
-            console.log(e)
-          })
-        }else {
-          alert(r.data.msg)
-        }
+      if(!this.$v.$invalid) {
+        const {username, password} = this
+        this.$store.dispatch('auth/AUTH_REQUEST', {username, password}).then((r) => {
+          if (r.data.code == 200) {
+            this.$router.push('/')
+          } else {
+            alert(r.data.msg)
+          }
 
-      })
+        })
+      }
+    }
+  },validations: {
+    username: {
+      required,
+      minLength: minLength(4)
+    },
+    password: {
+      required,
+      minLength: minLength(4)
     }
   }
 }
@@ -61,5 +65,8 @@ export default {
 a{
   color: #000000;
   text-decoration: none;
+}
+.error{
+  color: #f79086;
 }
 </style>

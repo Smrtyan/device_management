@@ -3,6 +3,8 @@
     <form class="login" @submit.prevent="login">
       <h1>Sign Up</h1>
       <div class="row mb-2">
+        <div class="error" v-if="!$v.phone.required">Phone is required</div>
+        <div class="error" v-if="!$v.phone.minLength">Phone must be exactly {{$v.phone.$params.minLength.min}} letters.</div>
         <div class="col input-group">
           <b-input required v-model="phone" type="text" placeholder="手机"/>
           <span class="input-group-text"
@@ -11,23 +13,33 @@
         </div>
       </div>
       <div class="row mb-2">
+        <div class="error" v-if="!$v.code.required">code is required</div>
+        <div class="error" v-if="!$v.code.minLength">code must be exactly {{$v.code.$params.minLength.min}} letters.</div>
+
         <div class="col">
           <b-input required v-model="code" type="text" placeholder="验证码"/>
         </div>
       </div>
       <div class="row mb-2">
+        <div class="error" v-if="!$v.username.required">username is required</div>
+        <div class="error" v-if="!$v.username.minLength">username must be exactly {{$v.username.$params.minLength.min}} letters.</div>
+
         <div class="col">
           <b-input required v-model="username" type="text" placeholder="用户名"/>
         </div>
       </div>
       <div class="row mb-2">
+        <div class="error" v-if="!$v.password.required">password is required</div>
+        <div class="error" v-if="!$v.password.minLength">password must be exactly {{$v.password.$params.minLength.min}} letters.</div>
         <div class="col">
           <b-input required v-model="password" type="password" placeholder="密码"/>
         </div>
       </div>
       <div class="row mb-2">
         <div class="col">
-          <b-input required v-model="password" type="password" placeholder="再次确认密码"/>
+          <div class="error" v-if="$v.repeatPassword.$invalid">repeatPassword should be the same as password</div>
+
+          <b-input required v-model="repeatPassword" type="password" placeholder="再次确认密码"/>
         </div>
       </div>
       <hr/>
@@ -41,6 +53,7 @@
 
 <script>
 import {register, getRegisterMsg} from '@/api/auth'
+import {sameAs,required, minLength, maxLength} from 'vuelidate/lib/validators'
 export default {
   name: "SignUp",
   data(){
@@ -48,6 +61,7 @@ export default {
       phone:'',
       username: '',
       password: '',
+      repeatPassword:'',
       code:'',
       // 按钮上的文字
       codeMsg: '获取验证码',
@@ -62,35 +76,68 @@ export default {
     getCode(){
       console.log(this.timer)
       // 验证码60秒倒计时
-      if (!this.timer&&this.phone.length === 11) {
+      if (!this.timer&&!this.$v.phone.$invalid) {
         getRegisterMsg({
           phone:this.phone
         }).then(r=>{
           console.log(r)
-        });
-        this.timer = setInterval(() => {
-          if (this.countdown > 0 && this.countdown <= 60) {
-            this.countdown--;
-            if (this.countdown !== 0) {
-              this.codeMsg = "重新发送(" + this.countdown + ")";
-            } else {
-              clearInterval(this.timer);
-              this.codeMsg = "获取验证码";
-              this.countdown = 60;
-              this.timer = null;
-              this.codeDisabled = false;
-            }
+          if(r.data.code!=200){
+            alert(r.data.msg)
+          }else {
+            alert("发送成功")
+            this.timer = setInterval(() => {
+              if (this.countdown > 0 && this.countdown <= 60) {
+                this.countdown--;
+                if (this.countdown !== 0) {
+                  this.codeMsg = "重新发送(" + this.countdown + ")";
+                } else {
+                  clearInterval(this.timer);
+                  this.codeMsg = "获取验证码";
+                  this.countdown = 60;
+                  this.timer = null;
+                  this.codeDisabled = false;
+                }
+              }
+            }, 1000)
           }
-        }, 1000)
+        });
+      }else {
+        alert("号码不合法！")
       }
     }
     ,
-    register(){
-      register({
+    register() {
+      if (!this.$v.$invalid) {
+        const {phone, username, password, code} = this
+        register({
+          phone, username, password, code
+        }).then(r => {
+          // console.log(r.data)
+          alert(r.data.msg)
+        })
+      }
+    }
+  },
+  validations: {
+    username: {
+      required,
+      minLength: minLength(4)
+    },
+    phone: {
+      required,
+      minLength: minLength(11),
+      maxLength: maxLength(11)
+    },
+    password: {
+      required,
+      minLength: minLength(4)
+    },
+    repeatPassword: {
+      sameAsPassword:sameAs('password')
+    },code: {
+      required,
+      minLength: minLength(4)
 
-      }).then(r=>{
-        console.log(r)
-      })
     }
   }
 }
@@ -100,5 +147,8 @@ export default {
 a{
   text-decoration: none;
   color: #000000;
+}
+.error{
+  color: #f79086;
 }
 </style>

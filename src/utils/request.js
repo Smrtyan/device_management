@@ -1,11 +1,11 @@
 import axios from 'axios'
-// import router from "@/router";
+import router from "@/router";
 // create an axios instance
 const service = axios.create({
     baseURL: process.env.VUE_APP_BASE_SERVER,
     timeout: 10000 // request timeout
 })
-// service.defaults.headers.post['Content-Type'] = 'application/json'
+
 // request interceptor
 service.interceptors.request.use(
     config => {
@@ -18,13 +18,16 @@ service.interceptors.request.use(
 service.interceptors.response.use(function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+    // 401 -> need to login again
+    if(response.data.code.toString() === '401' || response.data.code.toString() === '40001') {
+        alert("会话超时或者身份无效，请重新登录！")
+        router.push('login');
+    }
     return response;
 }, function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // 401 -> need to login again
-    // if(error.response.status.toString() === '401')
-    //     alert("会话超时，请重新登录！")
-    //     router.push('login');
+    alert("会话超时或者身份无效，请重新登录！")
+    router.push('login');
     return Promise.reject(error);
 });
 

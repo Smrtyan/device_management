@@ -14,10 +14,11 @@ import request from '@/utils/request'
 // Not Found
 
 // get all groups: /group/all
-export function getAllGroups(){
+export function getAllGroups(data){
     return request({
         url: '/group/all',
         method: 'post',
+        data
     })
 }
 

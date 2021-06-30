@@ -2,7 +2,6 @@
   <div>
     <h2>Welcome home!</h2>
     <div class="btn-group mb-4" role="group" aria-label="Basic example">
-      <button type="button" class="btn btn-success me-2">Refresh</button>
       <button type="button"
               @click="chooseGroup(null)"
               :class="`btn ${selectedGroup==null?'btn-primary':'btn-outline-secondary'} me-2`">All</button>
@@ -117,7 +116,10 @@ export default {
     DeviceCard: DeviceCard
   },
   mounted() {
-    getAllGroups()
+    getAllGroups({
+      index:1,
+      pageSize:100
+    })
     .then(r=>{
       this.grps = r.data.data.rows;
 
@@ -189,7 +191,6 @@ export default {
             pageSize: this.totalPage
           }
       ).then(r=>{
-        console.log(r)
         const devices = r.data.data.rows.map(o=>{
           return{
             device:o

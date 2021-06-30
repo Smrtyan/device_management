@@ -13,7 +13,7 @@
         <div class="navbar-item">
           <div class="buttons">
             <router-link to="/login" class="button is-dark">
-              <strong v-if="$store.getters.isAuthenticated" @click="$store.dispatch('AUTH_LOGOUT')">Log out</strong>
+              <strong v-if="$store.getters['auth/isAuthenticated']" @click="$store.dispatch('auth/AUTH_LOGOUT')">Log out</strong>
             </router-link>
           </div>
         </div>

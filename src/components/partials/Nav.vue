@@ -1,14 +1,12 @@
 <template>
   <nav class="navbar container" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <router-link to="/" class="navbar-item" >
+      <router-link to="/" class="navbar-item me-2" >
         <strong class="is-size-4">Home</strong>
       </router-link>
-      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
+      <router-link to="/upload" class="navbar-item" >
+        <strong class="is-size-4">Upload</strong>
+      </router-link>
     </div>
     <div id="navbar" class="navbar-menu">
       <div class="navbar-end">
@@ -40,6 +38,7 @@ nav {
     &.router-link-exact-active {
       color: #d88d00;
     }
+    text-decoration: none;
   }
 }
 </style>

@@ -3,12 +3,14 @@ import Home from '@/pages/Home'
 import store from "@/store";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
+import Upload from "@/pages/Upload";
 const ifAuthenticated = (to, from, next) => {
-    if (store.getters.isAuthenticated) {
+    if (store.getters['auth/isAuthenticated']) {
         next()
         return
     }
-    next('/login')
+    next()
+    // next('/login')
 }
 const routes = [
     {
@@ -21,6 +23,11 @@ const routes = [
     },
     {
         path: "/signup", component: SignUp
+    },
+    {
+        path: '/upload',
+        component: Upload,
+        beforeEnter: ifAuthenticated
     },
     {
         path: '*',

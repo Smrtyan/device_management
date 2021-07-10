@@ -45,3 +45,12 @@ export function renameDevice(data){
     })
 
 }
+// 根据id查找设备
+export function getDeviceById(data){
+    return request({
+        url: "/dev/getDeviceById",
+        method: "POST",
+        data
+    })
+
+}

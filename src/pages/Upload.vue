@@ -4,13 +4,12 @@
 
     <b-row class="my-1">
       <b-col   class="mb-2">
-        <b-form-input id="input-small" size="sm" placeholder="Enter  version"></b-form-input>
+        <b-form-input id="input-small" size="sm" v-model="version" placeholder="Enter  version"></b-form-input>
       </b-col>
     </b-row>
     <b-row>
       <b-col  class="mb-2">
-
-        <b-form-file id="file" ref="file" v-on:change="handleFileUpload()" plain />
+        <b-form-file id="file" ref="file" v-model="file" v-on:change="handleFileUpload()" plain />
       </b-col>
     </b-row>
     <b-row>
@@ -19,14 +18,15 @@
       </b-col>
     </b-row>
   </b-container>
-
 </template>
 <script>
+import { addVersion } from "@/api/version.js"
 export default {
   name: "Upload",
   data(){
     return {
       file: null,
+      version:"",
       MAX_SIZE: 100, //文件大小限制 MAX_SIZE MB
     }
   },
@@ -51,11 +51,13 @@ export default {
         }
       }
     },
-    submitFile(){
+  async  submitFile(){
       // todo
-
       let formData = new FormData();
       formData.append('file', this.file);
+      formData.append("version",this.version)
+     let res = await addVersion(formData);
+     console.log(res);
     }
   }
 }

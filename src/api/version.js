@@ -16,19 +16,19 @@ import request from '@/utils/request'
 export function addVersion(data){
     return request({
         url: "/version/add",
-        methods: "POST",
+        method: "POST",
         data
     })
 }
 export function allVersion(){
     return request({
-        url: "/version/all",
-        methods: "POST"
+        url: "/version/getAll",
+        method: "POST",
     })
 }
 export function delVersion(){
     return request({
         url: "/version/del",
-        methods: "POST",
+        method: "POST",
     })
 }

@@ -33,6 +33,24 @@ export function getDevicesFromGroup(data) {
         // }
     })
 }
+export function getAllDevice() {
+    // console.log({
+    //     url: "/dev/all",
+    //     method: "POST",
+    //     data,
+    //     // headers: {
+    //     //     'Content-Type': 'application/json'
+    //     // }
+    // })
+    return request({
+        url: "/dev/getAll",
+        method: "POST"
+        // headers: {
+        //     'Content-Type': 'application/json'
+        // }
+    })
+}
+
 
 // rename a device
 // id string  (device id)

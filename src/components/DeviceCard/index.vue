@@ -42,36 +42,34 @@
           </div>
         </b-dropdown> -->
         <div style="margin=3px;">设备号：{{ getDevice.id }}</div>
-        <div>地区： {{ getDevice.groupId }}</div>
+        <div>地区： {{ device.groupId }}</div>
         <div>
-          电车检测服务：<span v-if="getDevice.status == 0">关闭</span
-          ><span v-if="getDevice.status == 1">开启</span
-          ><span v-if="getDevice.status == -1">未激活</span>
+          电车检测服务：<span v-if="device.status == 0">关闭</span
+          ><span v-if="device.status == 1">开启</span
+          ><span v-if="device.status == -1">未激活</span>
         </div>
         <div>
-          实时监控服务：<span v-if="getDevice.live == 0">关闭</span
-          ><span v-if="getDevice.live == 1">开启</span
-          ><span v-if="getDevice.live == -1">未激活</span>
+          实时监控服务：<span v-if="device.live == 0">关闭</span
+          ><span v-if="device.live == 1">开启</span
+          ><span v-if="device.live == -1">未激活</span>
         </div>
-        <div>软件版本：{{ getDevice.version }}</div>
-        <div>更新时间：{{ getDevice.updateTime }}</div>
+        <div>软件版本：{{ device.version }}</div>
+        <div>更新时间：{{ device.updateTime }}</div>
         <div style="margin-top: 1em" align="center">
           <b-button
             variant="outline-primary"
             size="sm"
             style="padding-left: 2em; padding-right: 2em"
             @click="sendCommand"
-            >发送指令</b-button
-          >
+            >查看历史监控视频</b-button>
         </div>
       </div>
     </el-card>
   </div>
 </template>
-
 <script>
 import { command } from "@/api/command.js";
-import { getDeviceById } from "@/api/device.js";
+// import { getDeviceById } from "@/api/device.js";
 export default {
   name: "index",
   props: ["device"],
@@ -87,7 +85,7 @@ export default {
         { value: "update", text: "系统更新" },
         { value: "delete", text: "删除文件" },
         { value: "reboot", text: "重启设备" },
-        { value: "", text: "修改设备参数" },
+        { value: "updateprorerties", text: "修改设备参数" },
         { value: "openMonitor", text: "打开实时监控" },
         { value: "closeMonitor", text: "关闭实时监控" },
         { value: "openAdjust", text: "打开调节模式" },
@@ -100,10 +98,20 @@ export default {
     };
   },
   computed: {
-    getDevice() {
+    getDevice(){
       return this.tempDevice;
     },
   },
+  // watch: {
+  //   device: {
+  //     changeDev(newValue, oldValue) {
+  //       console.log(newValue);
+  //       console.log("-------");
+  //       console.log(oldValue);
+  //     },
+  //     deep: true,
+  //   },
+  // },
   methods: {
     async sendCommand() {
       if (this.type == "status") {
@@ -175,7 +183,7 @@ export default {
           devicesId: [this.device.deviceId],
         });
         console.log(res);
-         setTimeout(() => {
+        setTimeout(() => {
           this.updateDevice();
         }, 2000);
         setTimeout(() => {
@@ -188,7 +196,7 @@ export default {
           devicesId: [this.device.deviceId],
         });
         console.log(res);
-         setTimeout(() => {
+        setTimeout(() => {
           this.updateDevice();
         }, 3000);
       } else if (this.type == "close") {
@@ -198,20 +206,14 @@ export default {
           devicesId: [this.device.deviceId],
         });
         console.log(res);
-        
+
         setTimeout(() => {
           this.updateDevice();
         }, 3000);
       }
     },
     updateDevice() {
-      getDeviceById({ id: this.device.id })
-        .then((result) => {
-          this.tempDevice = result.data.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      this.$emit("changeDevice", 1);
     },
   },
   //生命周期 - 挂载完成（可以访问DOM元素）

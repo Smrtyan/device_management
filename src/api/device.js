@@ -63,6 +63,13 @@ export function renameDevice(data){
     })
 
 }
+export function getDeviceByGroup(data){
+    return request({
+        url: "/dev/getDeviceByGroup",
+        method: "POST",
+        data
+    })
+}
 // 根据id查找设备
 export function getDeviceById(data){
     return request({
